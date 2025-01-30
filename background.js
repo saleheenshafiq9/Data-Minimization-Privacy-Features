@@ -186,7 +186,6 @@ chrome.webRequest.onBeforeRequest.addListener(
       initiator: details.initiator
     };
     
-    // Store request data to match with response later
     chrome.storage.local.set({ [`request_${details.requestId}`]: requestData });
     
     console.log("📤 Request Details:", requestData);
@@ -202,7 +201,6 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
       return acc;
     }, {});
     
-    // Store headers
     chrome.storage.local.set({ [`headers_${details.requestId}`]: requestHeaders });
     
     console.log("📋 Request Headers:", requestHeaders);
@@ -213,7 +211,6 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 
 chrome.webRequest.onCompleted.addListener(
   async (details) => {
-    // Get the stored request data
     const requestData = await chrome.storage.local.get(`request_${details.requestId}`);
     const headerData = await chrome.storage.local.get(`headers_${details.requestId}`);
     
@@ -233,22 +230,18 @@ chrome.webRequest.onCompleted.addListener(
       requestHeaders: headerData[`headers_${details.requestId}`]
     };
 
-    // Clean up stored data
     chrome.storage.local.remove([
       `request_${details.requestId}`,
       `headers_${details.requestId}`
     ]);
     
-    // Get cookies
     const cookies = await chrome.cookies.getAll({ domain: "www.google.com" });
     
-    // Combine all data
     const fullNetworkData = {
       response: responseData,
       cookies: cookies
     };
 
-    // Send to content script
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs.length > 0) {
         chrome.tabs.sendMessage(tabs[0].id, {
@@ -284,7 +277,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
               console.log(`${v.category}: ${v.detail}`);
               console.log(`Reference: ${v.policyReference}`);
 
-              // 🔴 Send a message to the content script to show warning
               if (v.severity === "HIGH") {
                   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                       chrome.tabs.sendMessage(tabs[0].id, {

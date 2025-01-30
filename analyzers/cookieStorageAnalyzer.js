@@ -30,7 +30,6 @@ const analyzeStoragePrivacy = (storageData) => {
       });
     };
   
-    // 1. Analyze Cookie Categories
     const analyzeCookies = (cookies) => {
       if (!cookies || !cookies.googleCookies) return;
       
@@ -56,7 +55,6 @@ const analyzeStoragePrivacy = (storageData) => {
       });
     };
   
-    // 2. Analyze Local Storage Usage
     const analyzeLocalStorage = (storage) => {
       const sensitivePatterns = [
         'preference',
@@ -82,7 +80,6 @@ const analyzeStoragePrivacy = (storageData) => {
       });
     };
   
-    // 3. Provide Privacy Control Insights
     const addPrivacyControls = () => {
       insights.push({
         category: 'Privacy Controls',
@@ -106,7 +103,6 @@ const analyzeStoragePrivacy = (storageData) => {
       });
     };
   
-    // Run analysis
     analyzeCookies(storageData.cookies);
     analyzeLocalStorage(storageData.localStorage);
     addPrivacyControls();
@@ -123,7 +119,6 @@ const analyzeStoragePrivacy = (storageData) => {
     };
   };
   
-  // Example usage in extension
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === "analyzePrivacyData") {
       const privacyReport = analyzeStoragePrivacy({
