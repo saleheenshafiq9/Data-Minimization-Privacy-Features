@@ -1,16 +1,30 @@
 {
   "manifest_version": 3,
   "name": "Data Minimization Privacy Features",
-  "version": "1.1",
-  "permissions": ["activeTab", "scripting"],
-  "host_permissions": ["<all_urls>"],
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["content.js"]
-    }
-  ],
+  "version": "1.0",
+  "permissions": ["storage", "webRequestAuthProvider", "activeTab", "omnibox", "scripting", "notifications", "webRequest", "webRequestBlocking", "cookies"],
+  "host_permissions": ["*://*/*", "https://api.openai.com/*", "https://www.google.com/*"],
+  "content_scripts": [{
+    "matches": ["<all_urls>"],
+    "js": ["content.js", "analyzers/tosAnalyzer.js", "analyzers/privacyAnalyzer.js", "analyzers/cookieStorageAnalyzer.js"],
+    "run_at": "document_end"
+  }],
+  "web_accessible_resources": [{
+    "resources": ["config.json"],
+    "matches": ["<all_urls>"]
+  }],
   "background": {
     "service_worker": "background.js"
+  },
+  "omnibox": {
+    "keyword": "pf"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
   }
 }
